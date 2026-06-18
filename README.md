@@ -13,7 +13,7 @@ cities in India (Mumbai, Delhi, Chennai, Bengaluru) and Japan (Tokyo, Osaka).
 📄 **Paper:** link will be updated when published (ACM SIGSPATIAL '26).
 
 <p align="center">
-  <img src="assets/qualitative.png" width="92%"><br>
+  <img src="assets/results.png" width="92%"><br>
   <em>Qualitative predictions across the four usage classes and several cities.
   Green borders mark correct predictions, red borders mark failure cases.</em>
 </p>
