@@ -1,0 +1,99 @@
+models:
+  dinov3_weights:   final_models/dinov3_weights/dinov3_vitl16_pretrain_lvd1689m-8aa4cbdd.pth
+  ssl_full:         final_models/ssl_model/full_model_improved.pth
+  ssl_backbone:     final_models/ssl_model/dinov3_backbone.pth
+  ssl_depth_enc:    final_models/ssl_model/depth_encoder.pth
+  detection:        final_models/detection_model/det_dinov3_ssl.pth
+  classifier:       final_models/classification_model/best_all.pth
+  cutmix:           final_models/annotation_model/cutmix_best.pth
+  clip_model:       ViT-B/32
+
+ssl:
+  epochs: 50
+  batch_size: 8
+  grad_accum: 16        # effective batch = 128
+  lr_backbone: 1.0e-5
+  lr_depth: 5.0e-5
+  lr_proj: 1.0e-3
+  gradient_checkpointing: true
+  modality_dropout: 0.2
+  temperature: 0.5      # NTXentLoss temperature
+  scheduler: cosine
+  eta_min: 1.0e-7
+
+detection:
+  img_size: 512
+  epochs: 80
+  batch_size: 6
+  lr: 3.0e-4
+  warmup_epochs: 5
+  strides: [16, 32, 64]
+  fpn_channels: 256
+  min_box_area: 400
+  center_sample_r: 1.5
+  depth_threshold_m: 30.0
+  score_thresh: 0.25
+  nms_thresh: 0.40
+
+classification:
+  img_size: 224
+  num_classes: 4
+  dropout: 0.3
+  text_embed_dim: 512   # CLIP ViT-B/32
+  visual_dim: 1024      # DINOv3 ViT-L/16
+  depth_dim: 128        # depth CNN output
+  fusion_dim: 512       # intermediate fusion dim
+
+  # Losses
+  focal_gamma: 2.0
+  supcon_weight: 0.3
+  supcon_temperature: 0.07
+  distill_temperature: 4.0
+  distill_alpha: 0.5
+  label_smoothing: 0.1
+
+  # Stage configs
+  stage1:
+    difficulty: [easy]
+    epochs_max: 30
+    plateau_patience: 5
+    plateau_delta: 0.005
+    lr: 3.0e-4
+    freeze_backbone: true
+    augmentation: weak
+
+  stage2:
+    difficulty: [easy, medium]
+    epochs_max: 30
+    plateau_patience: 5
+    plateau_delta: 0.005
+    lr: 1.0e-4
+    freeze_backbone: true
+    augmentation: medium
+    distill: true
+
+  stage3:
+    difficulty: [easy, medium, hard]
+    hard_mix_schedule: [0.25, 0.50, 1.0]
+    epochs_max: 40
+    plateau_patience: 8
+    plateau_delta: 0.003
+    lr: 1.0e-5
+    freeze_backbone: false
+    augmentation: strong
+    distill: true
+
+augmentation:
+  weak:
+    hflip: 0.5
+    color_jitter: {brightness: 0.2, contrast: 0.2, saturation: 0.2, hue: 0.1}
+  medium:
+    hflip: 0.5
+    randaugment: {n: 2, m: 5}
+    grayscale: 0.1
+  strong:
+    hflip: 0.5
+    cutmix_prob: 0.5
+    cutmix_alpha: 1.0
+    randaugment: {n: 3, m: 9}
+    random_erasing: 0.3

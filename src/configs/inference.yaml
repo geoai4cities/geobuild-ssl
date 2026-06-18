@@ -1,0 +1,32 @@
+models:
+  depth_model_size:  large       # Depth Anything V3
+  ssl_backbone:      final_models/ssl_model/dinov3_backbone.pth
+  depth_encoder:     final_models/ssl_model/depth_encoder.pth
+  detection:         final_models/detection_model/det_dinov3_ssl.pth
+  classifier:        final_models/classification_model/best_all.pth
+  clip_model:        ViT-B/32
+
+pipeline:
+  depth_threshold_m: 30.0
+  detection_score_thresh: 0.25
+  detection_nms_thresh: 0.40
+  detection_img_size: 512
+  classification_img_size: 224
+  min_crop_area_px2: 600
+  ocr_languages: [en, hi, ja]
+  ocr_min_confidence: 0.70
+
+classes:
+  names: [residential, commercial, industrial, institutional]
+  colors:
+    residential:   [0, 200, 0]
+    commercial:    [0, 100, 255]
+    industrial:    [255, 50, 50]
+    institutional: [255, 200, 0]
+
+outputs:
+  image_overlay: true
+  json: true
+  csv: true
+  geojson: false
+  save_min_confidence: 0.5

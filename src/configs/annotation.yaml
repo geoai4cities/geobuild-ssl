@@ -1,0 +1,89 @@
+annotation:
+  depth_threshold_m: 30.0
+  min_mask_area_px:  400
+  min_crop_height:   32
+
+  # Stage 2: CLIP classification
+  clip_models:
+    - ViT-B/32
+    - ViT-L/14
+  clip_templates:
+    residential:
+      - "a photo of a residential building"
+      - "a photo of an apartment building"
+      - "a photo of a house"
+      - "a photo of a flat or housing complex"
+      - "a photo of a dormitory or hostel"
+      - "a photo of a villa or bungalow"
+    commercial:
+      - "a photo of a commercial building"
+      - "a photo of a shop or store"
+      - "a photo of a hotel or restaurant"
+      - "a photo of a bank or office building"
+      - "a photo of a shopping mall or plaza"
+      - "a photo of a market or bazaar"
+      - "a photo of a showroom or dealership"
+    industrial:
+      - "a photo of an industrial building"
+      - "a photo of a factory or manufacturing plant"
+      - "a photo of a warehouse or depot"
+      - "a photo of a workshop or works"
+      - "a photo of an industrial facility"
+    institutional:
+      - "a photo of an institutional building"
+      - "a photo of a school or college"
+      - "a photo of a hospital or clinic"
+      - "a photo of a government or public building"
+      - "a photo of a temple, church, or mosque"
+      - "a photo of a police station or courthouse"
+
+  # Stage 2: OCR keyword mapping
+  ocr_keywords:
+    commercial:    ["hotel", "restaurant", "cafe", "coffee", "shop", "store", "bank",
+                    "mall", "pharmacy", "salon", "market", "bakery", "showroom", "atm",
+                    "supermarket", "clinic", "gym", "spa", "boutique", "plaza", "motors",
+                    "ホテル", "レストラン", "銀行", "ショップ", "コンビニ", "スーパー",
+                    "होटल", "दुकान", "बैंक", "रेस्टोरेंट", "शॉप", "बाज़ार", "मार्ट"]
+    institutional: ["hospital", "school", "college", "university", "church", "temple",
+                    "mosque", "police", "government", "clinic", "court", "library",
+                    "academy", "institute", "ministry", "municipal", "public",
+                    "病院", "学校", "大学", "警察署", "寺", "神社", "図書館", "市役所",
+                    "अस्पताल", "स्कूल", "विद्यालय", "मंदिर", "पुलिस", "सरकार", "न्यायालय"]
+    industrial:    ["factory", "warehouse", "plant", "industry", "manufacturing",
+                    "ltd", "pvt", "works", "depot", "storage", "steel", "chemicals",
+                    "engineering", "industries", "corporation",
+                    "工場", "倉庫", "製造", "工業", "産業",
+                    "कारखाना", "गोदाम", "उद्योग", "प्राइवेट लिमिटेड"]
+  ocr_min_confidence: 0.70
+  ocr_languages: [en, hi, ja]
+
+  # Stage 3: Fusion rules
+  fusion:
+    ocr_override_threshold: 0.70      # OCR confidence to override CLIP
+    clip_ensemble_threshold: 0.55     # Both CLIP models agree above this
+    geometric_fallback_threshold: 0.65
+    discard_below: 0.35               # Remove samples below this final confidence
+
+  # Stage 4: Prototype consistency
+  prototype:
+    k_neighbors: 10
+    relabel_ratio_threshold: 0.85     # relabel if nearest_class/own_class dist < 0.85
+    knn_agreement_min: 0.40           # flag if <40% of k-NN agree on label
+
+  # Stage 5: Rare class mining thresholds
+  mining:
+    target_count: 1500
+    industrial:
+      min_aspect_ratio: 1.5
+      min_mask_area: 40000
+      max_clip_residential: 0.35
+    institutional:
+      min_clip_institutional: 0.35
+      max_clip_residential: 0.50
+      min_mask_area: 10000
+
+  # Stage 6: Final assembly
+  final:
+    majority_min_confidence: 0.50
+    rare_min_confidence: 0.40
+    target_per_class: 1500

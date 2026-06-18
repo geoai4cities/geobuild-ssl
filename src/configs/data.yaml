@@ -1,0 +1,39 @@
+data:
+  raw_panoramas:    data/raw/panoramas/
+  ssl_images:       data/ssl_pretraining/input/
+  ssl_depths:       data/ssl_pretraining/depth/
+  curriculum:       data/curriculum/
+  curriculum_balanced: data/curriculum_balanced/
+  curriculum_depths: data/curriculum_depths/
+  annotations:      data/annotations/
+  text_embeddings:  data/text_embeddings/
+  ocr_outputs:      data/ocr_outputs/
+
+views:
+  stage: 2          # 16 views per panorama
+  fov: 90
+  output_size: 512
+  yaw_easy:   [67.5, 90.0, 112.5, 247.5, 270.0, 292.5]
+  yaw_medium: [22.5, 45.0, 135.0, 225.0, 315.0, 337.5]
+  yaw_hard:   [0.0, 157.5, 180.0, 202.5]
+
+splits:
+  train: 0.80
+  val:   0.10
+  test:  0.10
+  seed:  42
+  split_by: panorama   # NEVER split by image — data leakage
+
+classes:
+  names: [residential, commercial, industrial, institutional]
+  ids:   {residential: 0, commercial: 1, industrial: 2, institutional: 3}
+  colors:
+    residential:  [0, 200, 0]     # green
+    commercial:   [0, 100, 255]   # blue
+    industrial:   [255, 50, 50]   # red
+    institutional: [255, 200, 0]  # yellow
+
+depth:
+  threshold_m: 30.0
+  min_m: 0.2
+  max_m: 35.0
