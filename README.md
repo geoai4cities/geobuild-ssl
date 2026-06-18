@@ -15,7 +15,7 @@ cities in India (Mumbai, Delhi, Chennai, Bengaluru) and Japan (Tokyo, Osaka).
 <p align="center">
   <img src="assets/results.png" width="92%"><br>
   <em>Qualitative predictions across the four usage classes and several cities.
-  Green borders mark correct predictions, red borders mark failure cases.</em>
+  </em>
 </p>
 
 ## Installation
