@@ -1,0 +1,6 @@
+acm_paper_camera_ready/
+.DS_Store
+outputs/
+final_models/**/*.pth
+__pycache__/
+*.pyc
