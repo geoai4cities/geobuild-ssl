@@ -23,7 +23,7 @@ from lightly.models.modules import SimCLRProjectionHead
 # ==================================================
 RGB_ROOT = "data/ssl_pretraining/input"
 DEPTH_ROOT = "data/ssl_pretraining/depth"
-DINOV3_CHECKPOINT = "data/dinov3_weights/dinov3_vitl16_pretrain_lvd1689m-8aa4cbdd.pth"
+DINOV3_CHECKPOINT = "final_models/dinov3_weights/dinov3_vitl16_pretrain_lvd1689m-8aa4cbdd.pth"
 OUT_DIR = "out/ssl_dinov3_rgbd"
 CKPT_DIR = os.path.join(OUT_DIR, "checkpoints")
 
